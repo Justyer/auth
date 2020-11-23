@@ -1,0 +1,21 @@
+select u.*,r.*,p.*,m.*
+from
+groot_right_user u
+left join
+groot_rightmid_ur ur
+on u.user_id=ur.user_id
+left join
+groot_right_role r
+on ur.role_id=r.role_id
+left join
+groot_rightmid_rp rp
+on r.role_id=rp.role_id
+left join
+groot_right_perm p
+on rp.perm_id=p.perm_id
+left join
+groot_rightmid_pm pm
+on p.perm_id=pm.perm_id
+left join
+groot_right_menu m
+on pm.menu_id=m.menu_id;
