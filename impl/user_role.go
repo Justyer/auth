@@ -24,9 +24,12 @@ func (self *UserRole) Add() error {
 	}).Create(self).Error
 }
 
-func (self *UserRole) Del() error {
-	if self.UserId&self.RoleId == 0 {
-		return self.Err.Msg("user_id not empty")
+func (self *UserRole) Del() (err error) {
+	switch {
+	case self.UserId&self.RoleId != 0:
+		err = self.DB.Table(self.TableName()).Where("user_id=? and role_id=?", self.UserId, self.RoleId).UpdateColumn("status", "disable").Error
+	default:
+		err = self.Err.Msg("user_id not empty")
 	}
-	return self.DB.Table(self.TableName()).Where("user_id=? and role_id=?", self.UserId, self.RoleId).UpdateColumn("status", "disable").Error
+	return
 }

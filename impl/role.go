@@ -15,17 +15,24 @@ func (Role) TableName() string {
 }
 
 func (self *Role) Add() (rid int64, err error) {
-	if self.Name != "" {
+	rid = self.RoleId
+	switch {
+	case self.RoleId != 0:
+		err = self.DB.Table(self.TableName()).Where("role_id=?", self.RoleId).Updates(self).Error
+	case self.Name != "":
 		err = self.DB.Table(self.TableName()).Create(self).Error
-		rid = self.RoleId
-		return
+	default:
+		err = self.Err.Msg("role_id|role_name not empty")
 	}
-	return 0, self.Err.Msg("role_id|name not empty")
+	return
 }
 
-func (self *Role) Delete() error {
-	if self.RoleId != 0 {
-		return self.DB.Table(self.TableName()).Where("role_id=?", self.RoleId).UpdateColumn("status", "disable").Error
+func (self *Role) Del() (err error) {
+	switch {
+	case self.RoleId != 0:
+		err = self.DB.Table(self.TableName()).Where("role_id=?", self.RoleId).UpdateColumn("status", "disable").Error
+	default:
+		err = self.Err.Msg("role_id not empty")
 	}
-	return self.Err.Msg("role_id not empty")
+	return
 }

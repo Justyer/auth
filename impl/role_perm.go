@@ -19,14 +19,17 @@ func (RolePerm) TableName() string {
 
 func (self *RolePerm) Add() error {
 	return self.DB.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "user_id"}, {Name: "role_id"}},
+		Columns:   []clause.Column{{Name: "role_id"}, {Name: "perm_id"}},
 		DoUpdates: clause.AssignmentColumns([]string{"status"}),
 	}).Create(self).Error
 }
 
-func (self *RolePerm) Del() error {
-	if self.RoleId&self.PermId == 0 {
-		return self.Err.Msg("user_id not empty")
+func (self *RolePerm) Del() (err error) {
+	switch {
+	case self.RoleId&self.PermId != 0:
+		err = self.DB.Table(self.TableName()).Where("role_id=? and perm_id=?", self.RoleId, self.PermId).UpdateColumn("status", "disable").Error
+	default:
+		err = self.Err.Msg("user_id not empty")
 	}
-	return self.DB.Table(self.TableName()).Where("role_id=? and perm_id=?", self.RoleId, self.PermId).UpdateColumn("status", "disable").Error
+	return
 }

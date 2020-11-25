@@ -18,17 +18,24 @@ func (Menu) TableName() string {
 }
 
 func (self *Menu) Add() (mid int64, err error) {
-	if self.Name != "" && self.Path != "" && self.Level != 0 {
+	mid = self.MenuId
+	switch {
+	case self.MenuId != 0:
+		err = self.DB.Table(self.TableName()).Where("menu_id=?", self.MenuId).Updates(self).Error
+	case self.Name != "" && self.Path != "" && self.Level != 0:
 		err = self.DB.Table(self.TableName()).Create(self).Error
-		mid = self.MenuId
-		return
+	default:
+		err = self.Err.Msg("menu_name|menu_path|menu_level not empty")
 	}
-	return 0, self.Err.Msg("menu_name|menu_path|menu_level not empty")
+	return
 }
 
-func (self *Menu) Delete() error {
-	if self.MenuId != 0 {
-		return self.DB.Table(self.TableName()).Where("menu_id=?", self.MenuId).UpdateColumn("status", "disable").Error
+func (self *Menu) Del() (err error) {
+	switch {
+	case self.MenuId != 0:
+		err = self.DB.Table(self.TableName()).Where("menu_id=?", self.MenuId).UpdateColumn("status", "disable").Error
+	default:
+		err = self.Err.Msg("menu_id not empty")
 	}
-	return self.Err.Msg("menu_id not empty")
+	return
 }

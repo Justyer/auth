@@ -18,17 +18,24 @@ func (User) TableName() string {
 }
 
 func (self *User) Add() (uid int64, err error) {
-	if self.Nick != "" && self.Name != "" && self.Pass != "" {
+	uid = self.UserId
+	switch {
+	case self.UserId != 0:
+		err = self.DB.Table(self.TableName()).Where("user_id=?", self.UserId).Updates(self).Error
+	case self.Nick != "" && self.Name != "" && self.Pass != "":
 		err = self.DB.Table(self.TableName()).Create(self).Error
-		uid = self.UserId
-		return
+	default:
+		err = self.Err.Msg("user_nick|user_name|user_pass not empty")
 	}
-	return 0, self.Err.Msg("user_nick|user_name|user_pass not empty")
+	return
 }
 
-func (self *User) Delete() error {
-	if self.UserId != 0 {
-		return self.DB.Table(self.TableName()).Where("user_id=?", self.UserId).UpdateColumn("status", "disable").Error
+func (self *User) Del() (err error) {
+	switch {
+	case self.UserId != 0:
+		err = self.DB.Table(self.TableName()).Where("user_id=?", self.UserId).UpdateColumn("status", "disable").Error
+	default:
+		err = self.Err.Msg("user_id not empty")
 	}
-	return self.Err.Msg("user_id not empty")
+	return
 }

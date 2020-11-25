@@ -14,18 +14,25 @@ func (Perm) TableName() string {
 	return "auth_perm"
 }
 
-func (self *Perm) Add() (rid int64, err error) {
-	if self.Name != "" {
+func (self *Perm) Add() (pid int64, err error) {
+	pid = self.PermId
+	switch {
+	case self.PermId != 0:
+		err = self.DB.Table(self.TableName()).Where("perm_id=?", self.PermId).Updates(self).Error
+	case self.Name != "":
 		err = self.DB.Table(self.TableName()).Create(self).Error
-		rid = self.PermId
-		return
+	default:
+		err = self.Err.Msg("perm_id|perm_name not empty")
 	}
-	return 0, self.Err.Msg("perm_id|perm_name not empty")
+	return
 }
 
-func (self *Perm) Delete() error {
-	if self.PermId != 0 {
-		return self.DB.Table(self.TableName()).Where("perm_id=?", self.PermId).UpdateColumn("status", "disable").Error
+func (self *Perm) Del() (err error) {
+	switch {
+	case self.PermId != 0:
+		err = self.DB.Table(self.TableName()).Where("perm_id=?", self.PermId).UpdateColumn("status", "disable").Error
+	default:
+		err = self.Err.Msg("perm_id not empty")
 	}
-	return self.Err.Msg("perm_id not empty")
+	return
 }

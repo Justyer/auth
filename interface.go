@@ -11,8 +11,9 @@ type IAuth interface {
 	AddMenu(IMenu) (int64, error)
 	// 修改用户角色
 	UserRoleLink(IUserRole) error
-	// // 修改角色权限
+	// 修改角色权限
 	RolePermLink(IRolePerm) error
+	// 修改权限菜单
 }
 
 type IUser interface {
