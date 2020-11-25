@@ -15,7 +15,6 @@ func (Perm) TableName() string {
 }
 
 func (self *Perm) Add() (pid int64, err error) {
-	pid = self.PermId
 	switch {
 	case self.PermId != 0:
 		err = self.DB.Where("perm_id=?", self.PermId).Updates(self).Error
@@ -24,6 +23,7 @@ func (self *Perm) Add() (pid int64, err error) {
 	default:
 		err = self.Err.Msg("perm_id|perm_name not empty")
 	}
+	pid = self.PermId
 	return
 }
 

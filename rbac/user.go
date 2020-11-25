@@ -1,8 +1,6 @@
 package rbac
 
 import (
-	"fmt"
-
 	"github.com/Justyer/auth"
 )
 
@@ -22,16 +20,15 @@ func (User) TableName() string {
 }
 
 func (self *User) Add() (uid int64, err error) {
-	uid = self.UserId
 	switch {
 	case self.UserId != 0:
 		err = self.DB.Where("user_id=?", self.UserId).Updates(self).Error
 	case self.Nick != "" && self.Name != "" && self.Pass != "":
 		err = self.DB.Create(self).Error
-		fmt.Println("uid", self.UserId)
 	default:
 		err = self.Err.Msg("user_nick|user_name|user_pass not empty")
 	}
+	uid = self.UserId
 	return
 }
 

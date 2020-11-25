@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"testing"
-	"unsafe"
 
 	"github.com/Justyer/auth"
 	"github.com/Justyer/auth/rbac"
@@ -13,14 +12,20 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func TestRBAC(t *testing.T) {
-	d, err := gorm.Open(mysql.Open("root:495495@tcp(127.0.0.1:3306)/db_groot?charset=utf8&parseTime=True"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Error),
+var db *gorm.DB
+
+func init() {
+	var err error
+	db, err = gorm.Open(mysql.Open("root:495495@tcp(127.0.0.1:3306)/db_groot?charset=utf8&parseTime=True"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	cfg := auth.Config{DB: d}
+}
+
+func TestUser(t *testing.T) {
+	cfg := auth.Config{DB: db}
 
 	mgr := auth.NewRBAC()
 
@@ -33,24 +38,30 @@ func TestRBAC(t *testing.T) {
 	}
 	uid, err := mgr.AddUser(u)
 	fmt.Println(uid, err)
+}
+func TestRole(t *testing.T) {
+	cfg := auth.Config{DB: db}
 
-	// ur := &rbac.UserRole{
-	// 	Config: cfg,
-	// 	UserId: 1,
-	// 	RoleId: 2,
-	// 	Status: "disable",
-	// }
-	// err = mgr.UserRoleLink(ur)
-	// fmt.Println(err)
+	mgr := auth.NewRBAC()
 
-	d.Migrator().CreateTable(&rbac.User{})
+	u := &rbac.Role{
+		Config: cfg,
+		Name:   "KAMISAMA",
+	}
+	rid, err := mgr.AddRole(u)
+	fmt.Println(rid, err)
 }
 
-func TestT(t *testing.T) {
-	var i int
-	fmt.Printf("type: %T byte:%d\n", i, unsafe.Sizeof(i))
-	var i32 int32
-	fmt.Printf("type: %T byte:%d\n", i32, unsafe.Sizeof(i32))
-	var i64 int64
-	fmt.Printf("type: %T byte:%d\n", i64, unsafe.Sizeof(i64))
+func TestUserRole(t *testing.T) {
+	cfg := auth.Config{DB: db}
+
+	mgr := auth.NewRBAC()
+
+	ur := &rbac.UserRole{
+		Config: cfg,
+		UserId: 1,
+		RoleId: 1,
+	}
+	err := mgr.UserRoleLink(ur)
+	fmt.Println(err)
 }

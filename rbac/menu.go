@@ -18,7 +18,6 @@ func (Menu) TableName() string {
 }
 
 func (self *Menu) Add() (mid int64, err error) {
-	mid = self.MenuId
 	switch {
 	case self.MenuId != 0:
 		err = self.DB.Where("menu_id=?", self.MenuId).Updates(self).Error
@@ -27,6 +26,7 @@ func (self *Menu) Add() (mid int64, err error) {
 	default:
 		err = self.Err.Msg("menu_name|menu_path|menu_level not empty")
 	}
+	mid = self.MenuId
 	return
 }
 
