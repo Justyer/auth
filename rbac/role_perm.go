@@ -1,4 +1,4 @@
-package impl
+package rbac
 
 import (
 	"github.com/Justyer/auth"
@@ -6,7 +6,7 @@ import (
 )
 
 type RolePerm struct {
-	auth.Config
+	auth.Config `gorm:"-"`
 
 	RoleId int64  `gorm:"column:role_id,primary_key"`
 	PermId int64  `gorm:"column:perm_id,primary_key"`
@@ -27,7 +27,7 @@ func (self *RolePerm) Add() error {
 func (self *RolePerm) Del() (err error) {
 	switch {
 	case self.RoleId&self.PermId != 0:
-		err = self.DB.Table(self.TableName()).Where("role_id=? and perm_id=?", self.RoleId, self.PermId).UpdateColumn("status", "disable").Error
+		err = self.DB.Where("role_id=? and perm_id=?", self.RoleId, self.PermId).UpdateColumn("status", "disable").Error
 	default:
 		err = self.Err.Msg("user_id not empty")
 	}

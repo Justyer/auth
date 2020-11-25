@@ -1,9 +1,9 @@
-package impl
+package rbac
 
 import "github.com/Justyer/auth"
 
 type Menu struct {
-	auth.Config
+	auth.Config `gorm:"-"`
 
 	MenuId int64  `gorm:"column:menu_id,primary_key"`
 	Name   string `gorm:"column:name;default"`
@@ -21,9 +21,9 @@ func (self *Menu) Add() (mid int64, err error) {
 	mid = self.MenuId
 	switch {
 	case self.MenuId != 0:
-		err = self.DB.Table(self.TableName()).Where("menu_id=?", self.MenuId).Updates(self).Error
+		err = self.DB.Where("menu_id=?", self.MenuId).Updates(self).Error
 	case self.Name != "" && self.Path != "" && self.Level != 0:
-		err = self.DB.Table(self.TableName()).Create(self).Error
+		err = self.DB.Create(self).Error
 	default:
 		err = self.Err.Msg("menu_name|menu_path|menu_level not empty")
 	}
@@ -33,7 +33,7 @@ func (self *Menu) Add() (mid int64, err error) {
 func (self *Menu) Del() (err error) {
 	switch {
 	case self.MenuId != 0:
-		err = self.DB.Table(self.TableName()).Where("menu_id=?", self.MenuId).UpdateColumn("status", "disable").Error
+		err = self.DB.Where("menu_id=?", self.MenuId).UpdateColumn("status", "disable").Error
 	default:
 		err = self.Err.Msg("menu_id not empty")
 	}

@@ -1,9 +1,9 @@
-package impl
+package rbac
 
 import "github.com/Justyer/auth"
 
 type Perm struct {
-	auth.Config
+	auth.Config `gorm:"-"`
 
 	PermId int64  `gorm:"column:perm_id,primary_key"`
 	Name   string `gorm:"column:name;default"`
@@ -18,9 +18,9 @@ func (self *Perm) Add() (pid int64, err error) {
 	pid = self.PermId
 	switch {
 	case self.PermId != 0:
-		err = self.DB.Table(self.TableName()).Where("perm_id=?", self.PermId).Updates(self).Error
+		err = self.DB.Where("perm_id=?", self.PermId).Updates(self).Error
 	case self.Name != "":
-		err = self.DB.Table(self.TableName()).Create(self).Error
+		err = self.DB.Create(self).Error
 	default:
 		err = self.Err.Msg("perm_id|perm_name not empty")
 	}
@@ -30,7 +30,7 @@ func (self *Perm) Add() (pid int64, err error) {
 func (self *Perm) Del() (err error) {
 	switch {
 	case self.PermId != 0:
-		err = self.DB.Table(self.TableName()).Where("perm_id=?", self.PermId).UpdateColumn("status", "disable").Error
+		err = self.DB.Where("perm_id=?", self.PermId).UpdateColumn("status", "disable").Error
 	default:
 		err = self.Err.Msg("perm_id not empty")
 	}

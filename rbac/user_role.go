@@ -1,4 +1,4 @@
-package impl
+package rbac
 
 import (
 	"github.com/Justyer/auth"
@@ -6,11 +6,11 @@ import (
 )
 
 type UserRole struct {
-	auth.Config
+	auth.Config `gorm:"-"`
 
-	UserId int64  `gorm:"column:user_id,primary_key"`
-	RoleId int64  `gorm:"column:role_id,primary_key"`
-	Status string `gorm:"column:status;default"`
+	UserId int64  `gorm:"column:user_id;primaryKey;autoIncrement:false"`
+	RoleId int64  `gorm:"column:role_id;primaryKey;autoIncrement:false"`
+	Status string `gorm:"column:status;default:'enable'"`
 }
 
 func (UserRole) TableName() string {
@@ -27,7 +27,7 @@ func (self *UserRole) Add() error {
 func (self *UserRole) Del() (err error) {
 	switch {
 	case self.UserId&self.RoleId != 0:
-		err = self.DB.Table(self.TableName()).Where("user_id=? and role_id=?", self.UserId, self.RoleId).UpdateColumn("status", "disable").Error
+		err = self.DB.Where("user_id=? and role_id=?", self.UserId, self.RoleId).UpdateColumn("status", "disable").Error
 	default:
 		err = self.Err.Msg("user_id not empty")
 	}
