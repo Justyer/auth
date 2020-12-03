@@ -1,11 +1,9 @@
 package rbac
 
-import (
-	"github.com/Justyer/auth"
-)
+import "github.com/Justyer/auth"
 
 type Role struct {
-	auth.Config `gorm:"-"`
+	Config `gorm:"-"`
 
 	RoleId int64  `gorm:"column:role_id;primaryKey"`
 	Name   string `gorm:"column:name;default:''"`
@@ -27,6 +25,11 @@ func (self *Role) Add() (rid int64, err error) {
 	}
 	rid = self.RoleId
 	return
+}
+
+func (self *Role) Get() (auth.IRole, error) {
+	err := self.DB.Where("role_id=?", self.RoleId).Find(self).Error
+	return self, err
 }
 
 func (self *Role) Del() (err error) {

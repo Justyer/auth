@@ -1,12 +1,11 @@
 package rbac
 
 import (
-	"github.com/Justyer/auth"
 	"gorm.io/gorm/clause"
 )
 
 type UserRole struct {
-	auth.Config `gorm:"-"`
+	Config `gorm:"-"`
 
 	UserId int64  `gorm:"column:user_id;primaryKey;autoIncrement:false"`
 	RoleId int64  `gorm:"column:role_id;primaryKey;autoIncrement:false"`

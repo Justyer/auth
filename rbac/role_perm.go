@@ -1,12 +1,9 @@
 package rbac
 
-import (
-	"github.com/Justyer/auth"
-	"gorm.io/gorm/clause"
-)
+import "gorm.io/gorm/clause"
 
 type RolePerm struct {
-	auth.Config `gorm:"-"`
+	Config `gorm:"-"`
 
 	RoleId int64  `gorm:"column:role_id,primary_key"`
 	PermId int64  `gorm:"column:perm_id,primary_key"`

@@ -12,7 +12,11 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var db *gorm.DB
+var (
+	db  *gorm.DB
+	cfg rbac.Config
+	mgr *auth.RBAC
+)
 
 func init() {
 	var err error
@@ -22,13 +26,12 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	cfg := rbac.Config{DB: db}
+
+	mgr := auth.NewRBAC()
 }
 
 func TestUser(t *testing.T) {
-	cfg := auth.Config{DB: db}
-
-	mgr := auth.NewRBAC()
-
 	u := &rbac.User{
 		Config: cfg,
 		Nick:   "川桑",
@@ -40,10 +43,6 @@ func TestUser(t *testing.T) {
 	fmt.Println(uid, err)
 }
 func TestRole(t *testing.T) {
-	cfg := auth.Config{DB: db}
-
-	mgr := auth.NewRBAC()
-
 	u := &rbac.Role{
 		Config: cfg,
 		Name:   "KAMISAMA",
@@ -53,15 +52,37 @@ func TestRole(t *testing.T) {
 }
 
 func TestUserRole(t *testing.T) {
-	cfg := auth.Config{DB: db}
-
-	mgr := auth.NewRBAC()
-
 	ur := &rbac.UserRole{
 		Config: cfg,
 		UserId: 1,
 		RoleId: 1,
 	}
 	err := mgr.UserRoleLink(ur)
+	fmt.Println(err)
+}
+
+func TestUserList(t *testing.T) {
+	page := &rbac.Page{
+		Config: cfg,
+		Page:   2,
+		Count:  5,
+		Enable: true,
+	}
+
+	users, err := mgr.UserList(page)
+	fmt.Println(users)
+	fmt.Println(err)
+}
+
+func TestRoleList(t *testing.T) {
+	page := &rbac.Page{
+		Config: cfg,
+		Page:   2,
+		Count:  5,
+		Enable: true,
+	}
+
+	roles, err := mgr.RoleList(page)
+	fmt.Println(roles)
 	fmt.Println(err)
 }

@@ -45,29 +45,12 @@ CREATE TABLE `auth_role_perm` (
 CREATE TABLE `auth_perm` (
   `perm_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(15) NOT NULL COMMENT '权限',
+  `path` varchar(15) NOT NULL DEFAULT '' COMMENT '路径',
+  `level` tinyint(1) NOT NULL DEFAULT '0' COMMENT '层级',
+  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父级权限id',
   `status` enum('enable','disable') NOT NULL DEFAULT 'enable' COMMENT '状态',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`perm_id`),
-  KEY `idx_ctime` (`create_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='权限-权限表';
-
-CREATE TABLE `auth_perm_menu` (
-  `perm_id` int(11) NOT NULL,
-  `menu_id` int(11) NOT NULL,
-  `status` enum('enable','disable') NOT NULL DEFAULT 'enable' COMMENT '状态',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`perm_id`, `menu_id`),
-  KEY `idx_ctime` (`create_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='权限-权限菜单关联表';
-
-CREATE TABLE `auth_menu` (
-  `menu_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(15) NOT NULL COMMENT '权限',
-  `status` enum('enable','disable') NOT NULL DEFAULT 'enable' COMMENT '状态',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`menu_id`),
   KEY `idx_ctime` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='权限-权限表';

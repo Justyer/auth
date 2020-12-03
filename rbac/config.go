@@ -1,4 +1,4 @@
-package auth
+package rbac
 
 import (
 	"gorm.io/gorm"
