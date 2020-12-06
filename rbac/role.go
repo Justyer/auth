@@ -3,11 +3,11 @@ package rbac
 import "github.com/Justyer/auth"
 
 type Role struct {
-	Config `gorm:"-"`
+	Config `gorm:"-" json:"-"`
 
-	RoleId int64  `gorm:"column:role_id;primaryKey"`
-	Name   string `gorm:"column:name;default:''"`
-	Status string `gorm:"column:status;default:'enable'"`
+	RoleId int64  `gorm:"column:role_id;primaryKey" json:"role_id,omitempty"`
+	Name   string `gorm:"column:name;default:''" json:"name,omitempty"`
+	Status string `gorm:"column:status;default:'enable'" json:"status,omitempty"`
 }
 
 func (Role) TableName() string {

@@ -3,13 +3,13 @@ package rbac
 import "github.com/Justyer/auth"
 
 type Page struct {
-	Config
+	Config `json:"-"`
 
-	Page     int
-	Count    int
-	Enable   bool
-	Level    int32 // 权限层级
-	ParentId int64 // 父级权限id
+	Page     int   `json:"page,omitempty"`
+	Count    int   `json:"count,omitempty"`
+	Enable   bool  `json:"enable,omitempty"`
+	Level    int32 `json:"level,omitempty"`     // 权限层级
+	ParentId int64 `json:"parent_id,omitempty"` // 父级权限id
 }
 
 func (self *Page) UserPageTurn() (users []auth.IUser, err error) {

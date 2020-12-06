@@ -3,14 +3,14 @@ package rbac
 import "github.com/Justyer/auth"
 
 type Perm struct {
-	Config `gorm:"-"`
+	Config `gorm:"-" json:"-"`
 
-	PermId   int64  `gorm:"column:perm_id;primaryKey"`
-	Name     string `gorm:"column:name;default:''"`
-	Path     string `gorm:"column:path;default:''"`
-	Level    int32  `gorm:"column:level;default:0"`
-	ParentId int64  `gorm:"column:parent_id;default:0"`
-	Status   string `gorm:"column:status;default:'enable'"`
+	PermId   int64  `gorm:"column:perm_id;primaryKey" json:"perm_id,omitempty"`
+	Name     string `gorm:"column:name;default:''" json:"name,omitempty"`
+	Path     string `gorm:"column:path;default:''" json:"path,omitempty"`
+	Level    int32  `gorm:"column:level;default:0" json:"level,omitempty"`
+	ParentId int64  `gorm:"column:parent_id;default:0" json:"parent_id,omitempty"`
+	Status   string `gorm:"column:status;default:'enable'" json:"status,omitempty"`
 }
 
 func (Perm) TableName() string {

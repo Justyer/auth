@@ -5,11 +5,11 @@ import (
 )
 
 type UserRole struct {
-	Config `gorm:"-"`
+	Config `gorm:"-" json:"-"`
 
-	UserId int64  `gorm:"column:user_id;primaryKey;autoIncrement:false"`
-	RoleId int64  `gorm:"column:role_id;primaryKey;autoIncrement:false"`
-	Status string `gorm:"column:status;default:'enable'"`
+	UserId int64  `gorm:"column:user_id;primaryKey" json:"user_id,omitempty"`
+	RoleId int64  `gorm:"column:role_id;primaryKey" json:"role_id,omitempty"`
+	Status string `gorm:"column:status;default:'enable'" json:"status,omitempty"`
 }
 
 func (UserRole) TableName() string {

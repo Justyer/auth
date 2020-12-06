@@ -3,11 +3,11 @@ package rbac
 import "gorm.io/gorm/clause"
 
 type RolePerm struct {
-	Config `gorm:"-"`
+	Config `gorm:"-" json:"-"`
 
-	RoleId int64  `gorm:"column:role_id,primary_key"`
-	PermId int64  `gorm:"column:perm_id,primary_key"`
-	Status string `gorm:"column:status;default"`
+	RoleId int64  `gorm:"column:role_id,primary_key" json:"role_id,omitempty"`
+	PermId int64  `gorm:"column:perm_id,primary_key" json:"perm_id,omitempty"`
+	Status string `gorm:"column:status;default" json:"status,omitempty"`
 }
 
 func (RolePerm) TableName() string {

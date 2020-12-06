@@ -3,14 +3,14 @@ package rbac
 import "github.com/Justyer/auth"
 
 type User struct {
-	Config `gorm:"-"`
+	Config `gorm:"-" json:"-"`
 
-	UserId int64  `gorm:"column:user_id;primaryKey"`
-	Nick   string `gorm:"column:nick;default:''"`
-	Phone  string `gorm:"column:phone;default:''"`
-	Name   string `gorm:"column:name;default:''"`
-	Pass   string `gorm:"column:pass;default:''"`
-	Status string `gorm:"column:status;default:'enable'"`
+	UserId int64  `gorm:"column:user_id;primaryKey" json:"user_id,omitempty"`
+	Nick   string `gorm:"column:nick;default:''" json:"nick,omitempty"`
+	Phone  string `gorm:"column:phone;default:''" json:"phone,omitempty"`
+	Name   string `gorm:"column:name;default:''" json:"name,omitempty"`
+	Pass   string `gorm:"column:pass;default:''" json:"pass,omitempty"`
+	Status string `gorm:"column:status;default:'enable'" json:"status,omitempty"`
 }
 
 func (User) TableName() string {

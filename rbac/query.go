@@ -3,10 +3,10 @@ package rbac
 type Query struct {
 	Config
 
-	UserId int64
-	User   User
-	Roles  []*Role
-	Perms  []*Perm
+	UserId int64   `json:"user_id,omitempty"`
+	User   User    `json:"user,omitempty"`
+	Roles  []*Role `json:"roles,omitempty"`
+	Perms  []*Perm `json:"perms,omitempty"`
 }
 
 func (self *Query) GetAllByUser() (err error) {
