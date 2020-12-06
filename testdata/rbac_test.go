@@ -15,7 +15,7 @@ import (
 var (
 	db  *gorm.DB
 	cfg rbac.Config
-	mgr *auth.RBAC
+	mgr auth.IAuth
 )
 
 func init() {
@@ -26,9 +26,9 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	cfg := rbac.Config{DB: db}
+	cfg = rbac.Config{DB: db}
 
-	mgr := auth.NewRBAC()
+	mgr = auth.NewRBAC()
 }
 
 func TestUser(t *testing.T) {
@@ -64,7 +64,7 @@ func TestUserRole(t *testing.T) {
 func TestUserList(t *testing.T) {
 	page := &rbac.Page{
 		Config: cfg,
-		Page:   2,
+		Page:   1,
 		Count:  5,
 		Enable: true,
 	}
@@ -77,12 +77,25 @@ func TestUserList(t *testing.T) {
 func TestRoleList(t *testing.T) {
 	page := &rbac.Page{
 		Config: cfg,
-		Page:   2,
+		Page:   1,
 		Count:  5,
 		Enable: true,
 	}
 
 	roles, err := mgr.RoleList(page)
 	fmt.Println(roles)
+	fmt.Println(err)
+}
+
+func TestGetAllByUser(t *testing.T) {
+	query := &rbac.Query{
+		Config: cfg,
+		UserId: 1,
+	}
+
+	err := mgr.GetAllByUser(query)
+	fmt.Println("users", query.User)
+	fmt.Println("roles", query.Roles)
+	fmt.Println("perms", query.Perms)
 	fmt.Println(err)
 }
